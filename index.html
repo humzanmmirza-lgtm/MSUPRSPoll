@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2487.2">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+    p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000}
+    span.s1 {font: 12.0px Helvetica; -webkit-text-stroke: 0px #000000}
+    span.s2 {font-kerning: none}
+    span.Apple-tab-span {white-space:pre}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Live Poll&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"&gt;&lt;/script&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body class="bg-slate-50 min-h-screen flex flex-col items-center justify-center p-4 font-sans"&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="voter-section" class="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h1 class="text-2xl font-bold text-center mb-6 text-slate-800"&gt;Cast Your Vote&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="status-msg" class="text-center mb-4 font-medium text-blue-600 hidden"&gt;Poll is currently closed!&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="grid grid-cols-1 gap-3" id="options-container"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;button onclick="castVote('A')" class="vote-btn p-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"&gt;Option A&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;button onclick="castVote('B')" class="vote-btn p-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"&gt;Option B&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;button onclick="castVote('C')" class="vote-btn p-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"&gt;Option C&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;button onclick="castVote('D')" class="vote-btn p-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"&gt;Option D&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;hr class="my-10 w-full max-w-md border-slate-200"&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="presenter-section" class="w-full max-w-2xl bg-slate-800 text-white p-8 rounded-2xl shadow-2xl"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="flex justify-between items-center mb-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;h2 class="text-xl font-bold uppercase tracking-widest"&gt;Presenter Dashboard&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;button id="toggle-poll" onclick="togglePoll()" class="px-6 py-2 bg-red-500 rounded-full font-bold hover:bg-red-600 transition"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>Close Polling</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="results-display" class="space-y-4 opacity-30 transition-opacity duration-500"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="relative pt-1"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="flex mb-2 items-center justify-between"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full bg-indigo-200 text-indigo-600"&gt;Option A&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;span id="count-A" class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full bg-indigo-200 text-indigo-600"&gt;0&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="overflow-hidden h-4 mb-4 text-xs flex rounded bg-indigo-200"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div id="bar-A" style="width:0%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-indigo-500 transition-all duration-500"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
+<p class="p3"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s2">// 1. YOUR FIREBASE CONFIG<span class="Apple-converted-space"> </span></span></p>
+<p class="p3"><span class="s2"><span class="Apple-tab-span">	</span>const firebaseConfig = {<span class="Apple-converted-space"> </span></span></p>
+<p class="p3"><span class="s2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>apiKey: "PASTE_YOUR_API_KEY_HERE", // Found in Project Settings -&gt; General databaseURL: "https://live-polling-msu-prs-default-rtdb.firebaseio.com/", projectId: "live-polling-msu-prs", };</span></p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>firebase.initializeApp(firebaseConfig);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const db = firebase.database();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>let pollOpen = true;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// 2. LOGIC FOR VOTING</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function castVote(letter) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if(!pollOpen) return alert("Poll is closed!");</p>
+<p class="p1"><span class="Apple-converted-space">            </span>db.ref('votes/' + letter).transaction(current =&gt; (current || 0) + 1);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>alert("Vote for " + letter + " recorded!");</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// 3. LOGIC FOR PRESENTER</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function togglePoll() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>pollOpen = !pollOpen;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const btn = document.getElementById('toggle-poll');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const results = document.getElementById('results-display');</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>if(pollOpen) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>btn.innerText = "Close Polling";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>btn.classList.replace('bg-green-500', 'bg-red-500');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>results.classList.add('opacity-30');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>btn.innerText = "Open Polling";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>btn.classList.replace('bg-red-500', 'bg-green-500');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>results.classList.remove('opacity-30');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>updateChart();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>db.ref('settings/status').set(pollOpen);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// 4. LIVE UPDATES</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function updateChart() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>db.ref('votes').on('value', (snapshot) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const data = snapshot.val() || {A:0, B:0, C:0, D:0};</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const total = Object.values(data).reduce((a, b) =&gt; a + b, 0);</p>
+<p class="p2"><span class="Apple-converted-space">                </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>['A', 'B', 'C', 'D'].forEach(letter =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const count = data[letter] || 0;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const percent = total &gt; 0 ? (count / total * 100) : 0;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>document.getElementById(`count-${letter}`).innerText = count;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>document.getElementById(`bar-${letter}`).style.width = percent + "%";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>});</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
